@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fun Facts Generator</title>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  />
+  <style>
+    :root {
+      --bg-color: #e6f2ff;
+      --text-color: #333;
+      --primary-color: #0080ff;
+      --button-bg: #0080ff;
+      --button-hover: #0059b3;
+      --fact-bg: #ffffff;
+    }
+
+    body.dark {
+      --bg-color: #1e1e1e;
+      --text-color: #e0e0e0;
+      --primary-color: #66b2ff;
+      --button-bg: #333;
+      --button-hover: #444;
+      --fact-bg: #2b2b2b;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      padding: 50px 20px;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    h1 {
+      font-size: 2.2em;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    p {
+      font-size: 1.1em;
+    }
+
+    button {
+      padding: 12px 25px;
+      font-size: 1em;
+      background-color: var(--button-bg);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin: 10px;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: var(--button-hover);
+    }
+
+    #fact {
+      margin-top: 30px;
+      font-size: 1.1em;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 15px;
+      border-left: 5px solid var(--primary-color);
+      background-color: var(--fact-bg);
+      border-radius: 5px;
+      animation: slideIn 0.5s ease-in-out;
+    }
+
+    #counter {
+      margin-top: 10px;
+      font-size: 0.95em;
+      color: var(--primary-color);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .theme-toggle {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: none;
+      font-size: 20px;
+      border: none;
+      cursor: pointer;
+      color: var(--primary-color);
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 1.7em;
+      }
+
+      button {
+        width: 100%;
+        font-size: 1.1em;
+      }
+
+      #fact {
+        font-size: 1em;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark Mode">
+    <i id="theme-icon" class="fas fa-moon"></i>
+  </button>
+
+  <h1><i class="fas fa-lightbulb"></i> Did You Know?</h1>
+  <p>Click the button to learn an interesting fact!</p>
+
+  <button onclick="showFact()"><i class="fas fa-bolt"></i> Show Fact</button>
+  <button onclick="copyFact()"><i class="fas fa-copy"></i> Copy</button>
+  <button onclick="shareFact()"><i class="fas fa-share-alt"></i> Share</button>
+
+  <div id="fact">Your fun fact will appear here...</div>
+  <div id="counter">Facts shown: 0</div>
+
+  <script>
+    const facts = [
+      "Honey never spoils. Archaeologists have found 3000-year-old honey in Egyptian tombs that is still edible.",
+      "Octopuses have three hearts and blue blood.",
+      "Bananas are berries, but strawberries aren't!",
+      "There are more stars in the universe than grains of sand on all Earth's beaches.",
+      "The Eiffel Tower can grow over 6 inches during summer due to heat expansion."
+    ];
+
+    let factCount = 0;
+
+    function showFact() {
+      const randomIndex = Math.floor(Math.random() * facts.length);
+      const fact = facts[randomIndex];
+      document.getElementById("fact").textContent = fact;
+      document.getElementById("fact").style.animation = "slideIn 0.5s ease-in-out";
+
+      factCount++;
+      document.getElementById("counter").textContent = "Facts shown: " + factCount;
+    }
+
+    function copyFact() {
+      const text = document.getElementById("fact").textContent;
+      if (!text || text === "Your fun fact will appear here...") return;
+      navigator.clipboard.writeText(text).then(() => {
+        alert("Fact copied to clipboard!");
+      });
+    }
+
+    function shareFact() {
+      const text = document.getElementById("fact").textContent;
+      if (!text || text === "Your fun fact will appear here...") return;
+
+      if (navigator.share) {
+        navigator.share({
+          title: "Fun Fact",
+          text: text,
+          url: window.location.href
+        }).catch(err => console.error("Share failed:", err));
+      } else {
+        alert("Web Share API is not supported in this browser.");
+      }
+    }
+
+    function toggleTheme() {
+      const body = document.body;
+      const icon = document.getElementById("theme-icon");
+
+      body.classList.toggle("dark");
+      const isDark = body.classList.contains("dark");
+
+      icon.className = isDark ? "fas fa-sun" : "fas fa-moon";
+      icon.title = isDark ? "Light Mode" : "Dark Mode";
+    }
+  </script>
+
+</body>
+</html>
